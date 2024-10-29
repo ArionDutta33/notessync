@@ -1,10 +1,21 @@
-import { FlatList, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Button,
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import React from 'react';
 import { Stack } from 'expo-router';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
+
 import NoteBox from './components/noteBox';
 import { APIData } from './types/apidata';
+import CustomButton from './components/button';
 const HomeScreen = () => {
   const data: APIData[] = [
     {
@@ -68,24 +79,25 @@ const HomeScreen = () => {
     <>
       <Stack.Screen
         options={{
-          title: 'My notes',
+          title: 'My notesa',
           headerRight: () => <AntDesign name="user" size={24} color="black" />,
         }}
       />
-      <View className="flex-1">
-        <View className="bg-red-400 p-6">
+      <View className="relative flex-1">
+        <View className="  p-6">
           <TextInput
             placeholder="Search notes... "
             className="mx-4 rounded-3xl border-2 p-2 px-8"
           />
         </View>
-        <ScrollView className="flex flex-1    border-2 bg-yellow-300">
-          <View className="flex-wrap  gap-2 bg-red-500 p-4 ">
+        <ScrollView showsVerticalScrollIndicator={false} className="flex flex-1    border-2 ">
+          <View className="flex-wrap  gap-2  p-4 ">
             {data.map((item) => (
               <NoteBox id={item.id} title={item.title} body={item.body} />
             ))}
           </View>
         </ScrollView>
+        <CustomButton />
       </View>
     </>
   );

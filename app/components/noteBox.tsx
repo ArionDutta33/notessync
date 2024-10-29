@@ -1,10 +1,14 @@
-import { View, Text } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import React from 'react';
 import { APIData } from '../types/apidata';
 
 const NoteBox = ({ body, title }: APIData) => {
   return (
-    <View className="h-[10%] w-[50%] rounded-3xl bg-zinc-500 px-4 py-3">
+    <Pressable
+      onPress={() => {
+        console.log('check');
+      }}
+      className="h-[10%] w-[50%] rounded-3xl bg-zinc-500 px-4 py-3">
       <View className="">
         <Text className="text-lg font-semibold text-white">Change by design</Text>
       </View>
@@ -15,7 +19,7 @@ const NoteBox = ({ body, title }: APIData) => {
         <Text className="border-2 border-zinc-500 px-4 text-zinc-400 ">Tag</Text>
         <Text>15 Aug</Text>
       </View>
-    </View>
+    </Pressable>
   );
 };
 
