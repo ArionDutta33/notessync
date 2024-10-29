@@ -1,6 +1,6 @@
 import { View, Text, Pressable } from 'react-native';
 import React from 'react';
-import { APIData } from '../types/apidata';
+import { APIData } from '../datatype/apidata';
 
 const NoteBox = ({ body, title }: APIData) => {
   return (

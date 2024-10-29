@@ -8,15 +8,30 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 
 import NoteBox from './components/noteBox';
-import { APIData } from './types/apidata';
+import { APIData } from './datatype/apidata';
 import CustomButton from './components/button';
+import { supabase } from '~/lib/supabase';
+
 const HomeScreen = () => {
+  const readRows = async () => {
+    try {
+      let { data: notes, error } = await supabase.from('notes').select('*');
+      console.log(notes);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    readRows();
+  });
+
   const data: APIData[] = [
     {
       id: 1,
