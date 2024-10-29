@@ -19,16 +19,15 @@ import CustomButton from './components/button';
 import { supabase } from '~/lib/supabase';
 
 const HomeScreen = () => {
-  const readRows = async () => {
-    try {
-      let { data: notes, error } = await supabase.from('notes').select('*');
-      console.log(notes);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const readRows = async () => {
+      try {
+        let { data: notes, error } = await supabase.from('notes').select('*');
+        console.log(notes);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     readRows();
   });
 
