@@ -2,7 +2,7 @@ import { View, Text, Pressable } from 'react-native';
 import React from 'react';
 import { APIData } from '../datatype/apidata';
 
-const NoteBox = ({ body, title }: APIData) => {
+const NoteBox = ({ body, title, created_at }: APIData) => {
   return (
     <Pressable
       onPress={() => {

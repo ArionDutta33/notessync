@@ -2,10 +2,15 @@ import { View, Text, TextInput, Button } from 'react-native';
 import React, { useState } from 'react';
 import { Stack } from 'expo-router';
 import { supabase } from '~/lib/supabase';
+import { useAuth } from '../providers/AuthProvider';
 
 const CreateNote = () => {
   const [inputTitle, setInputTitle] = useState('');
   const [inputBody, setInputBody] = useState('');
+  const { user } = useAuth();
+  if (user) {
+    console.log(user);
+  }
 
   const handleSubmit = async () => {
     try {

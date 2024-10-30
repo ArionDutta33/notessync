@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import React, { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { Redirect, router, Stack } from 'expo-router';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 
@@ -17,8 +17,15 @@ import NoteBox from './components/noteBox';
 import { APIData } from './datatype/apidata';
 import CustomButton from './components/button';
 import { supabase } from '~/lib/supabase';
-
+import { useAuth } from './providers/AuthProvider';
+//how to import notes and user types
 const HomeScreen = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    <Redirect href="/Auth" />;
+  }
+
   useEffect(() => {
     const readRows = async () => {
       try {
@@ -94,7 +101,16 @@ const HomeScreen = () => {
       <Stack.Screen
         options={{
           title: 'My notesa',
-          headerRight: () => <AntDesign name="user" size={24} color="black" />,
+          headerRight: () => (
+            <AntDesign
+              onPress={() => {
+                router.push('/(profile)/profile');
+              }}
+              name="user"
+              size={24}
+              color="black"
+            />
+          ),
         }}
       />
       <View className="relative flex-1">
@@ -107,7 +123,12 @@ const HomeScreen = () => {
         <ScrollView showsVerticalScrollIndicator={false} className="flex flex-1    border-2 ">
           <View className="flex-wrap  gap-2  p-4 ">
             {data.map((item) => (
-              <NoteBox id={item.id} title={item.title} body={item.body} />
+              <NoteBox
+                created_at={item.created_at}
+                id={item.id}
+                title={item.title}
+                body={item.body}
+              />
             ))}
           </View>
         </ScrollView>
