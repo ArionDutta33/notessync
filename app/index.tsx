@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Button,
   FlatList,
   Pressable,
@@ -8,104 +9,57 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect, router, Stack } from 'expo-router';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 
 import NoteBox from './components/noteBox';
-import { APIData } from './datatype/apidata';
 import CustomButton from './components/button';
 import { supabase } from '~/lib/supabase';
 import { useAuth } from './providers/AuthProvider';
-//how to import notes and user types
+import { Notes } from '~/types/db';
+
 const HomeScreen = () => {
+  const [data, setData] = useState<Notes[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const { user } = useAuth();
 
-  if (!user) {
-    <Redirect href="/Auth" />;
-  }
-
+  // Fetch notes on component mount
   useEffect(() => {
-    const readRows = async () => {
+    const getNotes = async () => {
+      setLoading(true);
       try {
-        let { data: notes, error } = await supabase.from('notes').select('*');
-        console.log(notes);
+        const { data: notes, error } = await supabase.from('notes').select('*');
+        if (error) throw error; // Handle error from Supabase
+        setData(notes);
       } catch (error) {
-        console.log(error);
+        console.error(error);
+      } finally {
+        setLoading(false); // Always turn off loading
       }
     };
-    readRows();
-  });
+    getNotes();
+  }, []); // Empty dependency array ensures this runs only on mount
 
-  const data: APIData[] = [
-    {
-      id: 1,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-    {
-      id: 2,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-    {
-      id: 3,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-    {
-      id: 4,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-    {
-      id: 5,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-    {
-      id: 6,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-    {
-      id: 7,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-    {
-      id: 8,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-    {
-      id: 9,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-    {
-      id: 10,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-    {
-      id: 10,
-      title: 'Change by design',
-      body: 'How we design changes the way we see the world. It enriches the experiences of people around us. Desgn is very humane',
-    },
-  ];
+  // Redirect to Auth if no user
+  // if (!user) {
+  //   return <Redirect href="/Auth" />;
+  // }
+
+  // Show loading indicator
+  if (loading) {
+    return <ActivityIndicator size="large" color="black" />;
+  }
 
   return (
     <>
       <Stack.Screen
         options={{
-          title: 'My notesa',
+          title: 'My Notes',
           headerRight: () => (
             <AntDesign
-              onPress={() => {
-                router.push('/(profile)/profile');
-              }}
+              onPress={() => router.push('/(profile)/profile')}
               name="user"
               size={24}
               color="black"
@@ -114,16 +68,14 @@ const HomeScreen = () => {
         }}
       />
       <View className="relative flex-1">
-        <View className="  p-6">
-          <TextInput
-            placeholder="Search notes... "
-            className="mx-4 rounded-3xl border-2 p-2 px-8"
-          />
+        <View className="p-6">
+          <TextInput placeholder="Search notes..." className="mx-4 rounded-3xl border-2 p-2 px-8" />
         </View>
-        <ScrollView showsVerticalScrollIndicator={false} className="flex flex-1    border-2 ">
-          <View className="flex-wrap  gap-2  p-4 ">
+        <ScrollView showsVerticalScrollIndicator={false} className="flex flex-1 border-2">
+          <View className="flex-wrap gap-2 p-4">
             {data.map((item) => (
               <NoteBox
+                key={item.id} // Add a key for each note
                 created_at={item.created_at}
                 id={item.id}
                 title={item.title}
