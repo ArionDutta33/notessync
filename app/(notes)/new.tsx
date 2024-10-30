@@ -16,7 +16,7 @@ const CreateNote = () => {
     try {
       const { data, error } = await supabase
         .from('notes')
-        .insert([{ title: inputTitle, body: inputBody }])
+        .insert([{ title: inputTitle, body: inputBody, user_id: user?.id }])
         .select();
       console.log(data, error);
     } catch (error) {
