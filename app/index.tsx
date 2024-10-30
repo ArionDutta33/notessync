@@ -46,14 +46,25 @@ const HomeScreen = () => {
               onPress={() => router.push('/(profile)/profile')}
               name="user"
               size={24}
-              color="black"
+              color="white"
             />
           ),
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: 'black',
+          },
+          headerTintColor: 'white',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
         }}
       />
-      <View className="relative flex-1">
+      <View className="relative flex-1 bg-black">
         <View className="p-6">
-          <TextInput placeholder="Search notes..." className="mx-4 rounded-3xl border-2 p-2 px-8" />
+          <TextInput
+            placeholder="Search notes..."
+            className="mx-4 rounded-3xl border-2 bg-zinc-400 p-2 px-8"
+          />
         </View>
         <FlatList
           data={data}
@@ -70,7 +81,7 @@ const HomeScreen = () => {
           keyExtractor={(item) => item.id.toString()}
           numColumns={2} // Display items in 2 columns
           showsVerticalScrollIndicator={false}
-          className="flex-1 bg-red-400"
+          className="flex-1 "
           contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 16 }}
         />
         <CustomButton />
