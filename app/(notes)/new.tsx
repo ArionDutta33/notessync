@@ -11,15 +11,25 @@ const CreateNote = () => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const { user } = useAuth();
+
   if (!user) {
     return <Redirect href={'/(auth)/Auth'} />;
   }
+
   const handleSubmit = async () => {
+    // Validation check for empty inputs
+    if (!inputTitle.trim() || !inputBody.trim()) {
+      setSnackbarMessage('Title and body cannot be empty');
+      setSnackbarVisible(true);
+      return; // Prevent further execution if validation fails
+    }
+
     try {
       const { data, error } = await supabase
         .from('notes')
-        .insert([{ title: inputTitle, body: inputBody, user_id: user?.id }])
+        .insert([{ title: inputTitle, body: inputBody, user_id: user.id }])
         .select();
+
       if (error) {
         console.log(error);
         setSnackbarMessage('Something went wrong');
