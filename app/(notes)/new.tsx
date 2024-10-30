@@ -1,24 +1,36 @@
 import { View, Text, TextInput, Button } from 'react-native';
 import React, { useState } from 'react';
-import { Stack } from 'expo-router';
+import { Redirect, router, Stack } from 'expo-router';
 import { supabase } from '~/lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
+import { Snackbar } from 'react-native-paper';
 
 const CreateNote = () => {
   const [inputTitle, setInputTitle] = useState('');
   const [inputBody, setInputBody] = useState('');
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const { user } = useAuth();
-  if (user) {
-    console.log(user);
+  if (!user) {
+    return <Redirect href={'/(auth)/Auth'} />;
   }
-
   const handleSubmit = async () => {
     try {
       const { data, error } = await supabase
         .from('notes')
         .insert([{ title: inputTitle, body: inputBody, user_id: user?.id }])
         .select();
-      console.log(data, error);
+      if (error) {
+        console.log(error);
+        setSnackbarMessage('Something went wrong');
+        setSnackbarVisible(true);
+      } else {
+        setSnackbarMessage('Note created successfully!');
+        setSnackbarVisible(true);
+        setInputTitle('');
+        setInputBody('');
+        router.push('/');
+      }
     } catch (error) {
       console.log(error);
     }
@@ -34,7 +46,7 @@ const CreateNote = () => {
             value={inputTitle}
             onChangeText={(text) => setInputTitle(text)}
             placeholder="Title"
-            className=" border-2 px-4"
+            className="border-2 px-4"
           />
         </View>
         <View className="my-4">
@@ -42,14 +54,20 @@ const CreateNote = () => {
           <TextInput
             value={inputBody}
             onChangeText={(text) => setInputBody(text)}
-            placeholder="Title"
-            className=" h-28 border-2 px-4"
+            placeholder="Body"
+            className="h-28 border-2 px-4"
           />
         </View>
       </View>
       <View className="px-24">
         <Button onPress={handleSubmit} title="Create" />
       </View>
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={Snackbar.DURATION_SHORT}>
+        {snackbarMessage}
+      </Snackbar>
     </>
   );
 };
